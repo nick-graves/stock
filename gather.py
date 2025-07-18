@@ -1,7 +1,7 @@
 import yfinance as yf
 import pandas as pd
 from scrape import get_combined_web_text
-from ai import summarize_with_ollama
+from ai import summarize_with_gemini
 from report import create_etf_pdf
 
 
@@ -17,6 +17,7 @@ print(r'''
 
 etf = input("Please input the ETF you would like to search: ")
 
+
 summary = yf.Ticker(etf).info.get("longBusinessSummary")
 print("==========================================================================================\n")
 print(summary)
@@ -28,7 +29,7 @@ print("\n\n")
 print("==========================================================================================\n")
 name = yf.Ticker(etf).info.get("shortName")
 text = get_combined_web_text(name)
-ai_summary = summarize_with_ollama(text)
+ai_summary = summarize_with_gemini(text)
 with open("data/output_summary.txt", "w", encoding="utf-8") as f:
     f.write(ai_summary)
 print(ai_summary)
@@ -37,8 +38,8 @@ print("\n=======================================================================
 print("\n\n")
 
 # grab data about top holdings and save to csv
-etf = yf.Ticker(etf).funds_data
-top_holdings = etf.top_holdings
+etf_data = yf.Ticker(etf).funds_data
+top_holdings = etf_data.top_holdings
 print("==========================================================================================\n")
 print(top_holdings)
 top_holdings.to_csv("data/top_holdings.csv", index=True)
@@ -91,6 +92,6 @@ create_etf_pdf(
     summary_path="data/output_summary.txt",
     csv1_path="data/top_holdings.csv",
     csv2_path="data/stock_fundamentals.csv",
-    output_pdf="report.pdf"
+    output_pdf=f"report/{etf}.pdf"
 )
 

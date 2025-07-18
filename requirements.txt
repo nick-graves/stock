@@ -1,0 +1,7 @@
+yfinance
+pandas
+genai
+load_dotenv
+reportlab
+requests
+beautifulsoup4
